@@ -16,6 +16,7 @@ const Navigation = () => {
     <ul className={"p-3 font-bold"}>
       {menuItems.map(({ title, path }, index) => (
         <li
+          key={title}
           className={` my-2 p-3 rounded-md cursor-pointer hover:bg-primary hover:text-white ${currentIndex === index || pathname === path ? "bg-primary text-white" : ""}`}
           onClick={() => handleClick(index, path)}
         >
