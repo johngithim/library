@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
-import { getBooks } from "@/src/api/booksApi.js";
+import { getBooksWithAssignment } from "@/src/api/booksApi.js";
 import { AgGridReact } from "ag-grid-react";
 import { AllCommunityModule } from "ag-grid-community";
 import { AgGridProvider } from "ag-grid-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Edit, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input.tsx";
 
@@ -11,46 +11,54 @@ const modules = [AllCommunityModule];
 
 const Dashboard = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  // Column Definitions: Defines the columns to be displayed.
-  const [colDefs, setColDefs] = useState([
-    { field: "name" },
-    { field: "author" },
-    { field: "publisher" },
-    { field: "isbn" },
-    {
-      field: "assigned To",
-      cellRenderer: () => (
-        <span className={"underline cursor-pointer"}>Student</span>
-      ),
-    },
-    {
-      field: "Edit",
-      maxWidth: 100,
-      cellRenderer: () => (
-        <div className={"py-2"}>
-          <Edit color={"gray"} className={"cursor-pointer"} />
-        </div>
-      ),
-    },
-    {
-      field: "Delete",
-      maxWidth: 100,
-      cellRenderer: () => (
-        <div className={"py-2"}>
-          <Trash2 color={"red"} className={"cursor-pointer"} />
-        </div>
-      ),
-    },
-  ]);
+
+  const colDefs = useMemo(
+    () => [
+      { field: "name" },
+      { field: "author" },
+      { field: "publisher" },
+      { field: "assignedTo", headerName: "Assigned To" },
+      {
+        field: "Edit",
+        maxWidth: 100,
+        cellRenderer: () => (
+          <div className={"py-2"}>
+            <Edit color={"gray"} className={"cursor-pointer"} />
+          </div>
+        ),
+      },
+      {
+        field: "Delete",
+        maxWidth: 100,
+        cellRenderer: () => (
+          <div className={"py-2"}>
+            <Trash2 color={"red"} className={"cursor-pointer"} />
+          </div>
+        ),
+      },
+    ],
+    [],
+  );
   const {
     data: books,
     isPending,
     error,
   } = useQuery({
     queryKey: ["books"],
-    queryFn: getBooks,
+    queryFn: getBooksWithAssignment,
   });
-  console.log(books);
+
+  if (isPending) {
+    return <p className={"p-6"}>Loading books...</p>;
+  }
+
+  if (error) {
+    return (
+      <p className={"p-6 text-red-600"}>
+        Could not load books. Please try again.
+      </p>
+    );
+  }
 
   return (
     <AgGridProvider modules={modules}>

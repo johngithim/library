@@ -10,10 +10,12 @@ import IssueBook from "@/components/IssueBook.jsx";
 import ReturnBook from "@/components/ReturnBook.jsx";
 import StudentsList from "@/components/StudentsList.jsx";
 import Header from "@/components/Header.jsx";
+import { Toaster } from "sonner";
 
 const App = () => {
   return (
     <BrowserRouter>
+      <Toaster richColors />
       <Header />
       <Routes>
         <Route path={"/"} element={<Navigate to="/dashboard" />} />
@@ -27,7 +29,7 @@ const App = () => {
           <Route path={"/issueBook"} element={<IssueBook />} />
           <Route path={"/returnBook"} element={<ReturnBook />} />
           <Route path={"/studentsList"} element={<StudentsList />} />
-          <Route path={"*"} elements={<Navigate to={"/"} />} />
+          <Route path={"*"} element={<Navigate to={"/"} />} />
         </Route>
       </Routes>
     </BrowserRouter>
